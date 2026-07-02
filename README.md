@@ -1,37 +1,66 @@
 # LinkedHashMap
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+
 class Graph{
-    ArrayList<ArrayList<Integer>>adjMat;
-    LinkedHashMap<String,Integer>VertexToIndex;
+    ArrayList<ArrayList<Integer>> adjMat;
+    LinkedHashMap<String, Integer> VertexToIndex;
+    
     public Graph(){
         adjMat = new ArrayList<>();
         VertexToIndex = new LinkedHashMap<>();
     }
-    public void addVertex(String vertex){
+    
+    private void addVertex(String vertex){
         if(!VertexToIndex.containsKey(vertex)){
-            VertexToIndex.put(vertex,adjMat.size());
-            for(ArrayList<Integer>row:adjMat){
+            VertexToIndex.put(vertex, adjMat.size());
+            for(ArrayList<Integer> row : adjMat){
                 row.add(0);
             }
-            ArrayList<Integer>newRow =new ArrayList<>();
-            for(int ind = 0; ind <= adjMat.size();ind++)
-            newRow.add(0);
+            ArrayList<Integer> newRow = new ArrayList<>();
+            for(int ind=0; ind <= adjMat.size(); ind++)
+                newRow.add(0);
             adjMat.add(newRow);
         }
     }
-}
-public class Main{
-    public static void main(String[] args){
-        Graph graph = new Graph();
-        graph.addVertex("Anvith");
-        graph.addVertex("Riyansh");
-        System.out.println(graph.VertexToIndex);
-        for(ArrayList<Integer>row:graph.adjMat){
-            System.out.println(row);
+    
+    public void addEdge(String source, String destination,int weight){
+        addVertex(source);
+        addVertex(destination);
+        
+        int row = VertexToIndex.get(source);
+        int col = VertexToIndex.get(destination);
+        
+        adjMat.get(row).set(col,weight);
+        adjMat.get(col).set(row,weight);
+    }
+    
+    public void display(){
+        for(int ind=0;ind<10;ind++)
+            System.out.print(" ");
+            
+        for(String vertex: VertexToIndex.keySet()){
+            System.out.printf("%-10s",vertex);
+        }
+        System.out.println();
+        for(String vertex: VertexToIndex.keySet()){
+            System.out.printf("%-10s",vertex);
+            int row = VertexToIndex.get(vertex);
+            for(int col = 0; col < adjMat.size(); col++){
+                System.out.printf("%-10d",adjMat.get(row).get(col));
+            }
+            System.out.println();
         }
     }
-        
+}
+
+public class Main
+{
+	public static void main(String[] args) {
+		Graph graph = new Graph();
+		graph.addEdge("Harish","Kumar",10);
+		graph.display();
+	}
 }
 
     
