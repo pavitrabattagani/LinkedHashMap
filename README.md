@@ -280,5 +280,94 @@ public class Main{
 
 
 
+#connected components
 
-
+public void display(){
+        for(String vertex : AdjList.keySet()){
+            System.out.println(vertex +" -> "+ AdjList.get(vertex));
+        }
+    }
+    
+    public void levelOrderTraverse(String start){
+        Queue<String> queue = new LinkedList<>();
+        queue.offer(start);
+        HashSet<String> visited = new HashSet<>();
+        visited.add(start);
+        while(!queue.isEmpty()){
+            String currentVertex = queue.poll();
+            System.out.print(currentVertex+ " ");
+            for(String neighbour: AdjList.get(currentVertex)){
+                if(!visited.contains(neighbour)){
+                    visited.add(neighbour);
+                    queue.offer(neighbour);
+                }
+            }
+        }
+    }
+    public boolean havingCycleBfs(String start){
+        Queue<Pair> queue = new LinkedList<>();
+        HashSet<String> visited = new HashSet<>();
+        visited.add(start);
+        queue.offer(new Pair (start,"-1"));
+        while(!queue.isEmpty()){
+            Pair current = queue.poll();
+            String child = current.child;
+            String parent = current.parent;
+            for(String neighbour : AdjList.get(child)){
+                if(!visited.contains(neighbour)){
+                    queue.offer(new Pair(neighbour,child));
+                    visited.add(neighbour);
+                }
+                else{
+                    if(!neighbour.equals(parent))
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    public void dfs(String start){
+        HashSet<String> visited = new HashSet<>();
+        dfsHelper(start, visited);
+    }
+    
+    public void dfsHelper(String current, HashSet<String> visited ){
+        visited.add(current);
+        System.out.print(current+ " ");
+        for(String neighbour: AdjList.get(current)){
+            if(!visited.contains(neighbour)){
+                dfsHelper(neighbour,visited);
+            }
+        }
+    }
+    
+    public boolean havingCycleDfs(String start){
+        HashSet<String> visited = new HashSet<>();
+        return havingCycleDfsHelper(start, "-1", visited);
+    }
+    
+    private boolean havingCycleDfsHelper(String current, String parent, HashSet<String> visited){
+        visited.add(current);
+        for(String neighbour: AdjList.get(current)){
+            if(!visited.contains(neighbour)){
+                if(havingCycleDfsHelper(neighbour,current, visited))
+                    return true;
+            }
+            else{
+                if(!neighbour.equals(parent)) return true;
+            }
+        }
+        return false;
+    }
+}
+public class Main{
+	public static void main(String[] args) {
+		Graph graph = new Graph();
+		graph.addEdge("10","19");
+		graph.addEdge("17","11");
+		graph.addEdge("11","19");
+		graph.addEdge("17","23");
+		System.out.print(graph.havingCycleDfs("10"));
+	}
+}
