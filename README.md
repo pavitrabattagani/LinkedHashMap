@@ -182,6 +182,101 @@ public class Main
 
 
 
+#undirected unweighted
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.HashSet;
+
+class Pair{
+    String child, parent;
+    
+    public Pair(String child, String parent){
+        this.child = child;
+        this.parent = parent;
+    }
+}
+
+class Graph{
+    LinkedHashMap<String,ArrayList<String>> AdjList;
+    
+    public Graph(){
+        AdjList = new LinkedHashMap<>();
+    }
+    
+    public void addEdge(String source, String destination){
+        if(!AdjList.containsKey(source)) {
+            AdjList.put(source, new ArrayList<>());
+        }
+        
+        if(!AdjList.containsKey(destination)) {
+            AdjList.put(destination, new ArrayList<>());
+        }
+        
+        AdjList.get(source).add(destination);
+        AdjList.get(destination).add(source);
+    }
+    
+    public void display(){
+        for(String vertex : AdjList.keySet()){
+            System.out.println(vertex +" -> "+ AdjList.get(vertex));
+        }
+    }
+    
+    public void levelOrderTraverse(String start){
+        Queue<String> queue = new LinkedList<>();
+        queue.offer(start);
+        HashSet<String> visited = new HashSet<>();
+        visited.add(start);
+        while(!queue.isEmpty()){
+            String currentVertex = queue.poll();
+            System.out.print(currentVertex+ " ");
+            for(String neighbour: AdjList.get(currentVertex)){
+                if(!visited.contains(neighbour)){
+                    visited.add(neighbour);
+                    queue.offer(neighbour);
+                }
+            }
+        }
+    }
+    public boolean havingCycleBfs(String start){
+        Queue<Pair> queue = new LinkedList<>();
+        HashSet<String> visited = new HashSet<>();
+        visited.add(start);
+        queue.offer(new Pair (start,"-1"));
+        while(!queue.isEmpty()){
+            Pair current = queue.poll();
+            String child = current.child;
+            String parent = current.parent;
+            for(String neighbour : AdjList.get(child)){
+                if(!visited.contains(neighbour)){
+                    queue.offer(new Pair(neighbour,child));
+                    visited.add(neighbour);
+                }
+                else{
+                    if(!neighbour.equals(parent))
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+public class Main{
+	public static void main(String[] args) {
+		Graph graph = new Graph();
+		graph.addEdge("10","19");
+		graph.addEdge("17","10");
+		graph.addEdge("17","11");
+		graph.addEdge("11","19");
+		graph.addEdge("17","23");
+		System.out.print(graph.havingCycleBfs("10"));
+	}
+}
+
+
 
 
 
